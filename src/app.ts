@@ -16,7 +16,6 @@ class Main {
     }
 
     public run() {
-        console.log("hehe");
         this.startOver();
     }
 
