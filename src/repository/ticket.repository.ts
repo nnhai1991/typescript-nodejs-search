@@ -5,16 +5,16 @@ import FileHelper from "../helper/file.helper";
 
 class TicketRepository {
     // data indexed by id
-    public data: { [key: number]: any; } = {};
+    public data: { [key: string]: any; } = {};
 
     // indexed assignee
-    public assigned: { [key: number]: number[] } = {};
+    public assigned: { [key: number]: string[] } = {};
 
     // indexed submitted user
-    public submited: { [key: number]: number[]; } = {};
+    public submited: { [key: number]: string[]; } = {};
 
     // indexed org
-    public org: { [key: number]: number[]; } = {};
+    public org: { [key: number]: string[]; } = {};
 
     private field: any[];
 
@@ -38,8 +38,7 @@ class TicketRepository {
     }
 
     public initiateIndexes() {
-        return Object.entries(this.data).forEach(([k, entry]) => {
-            const id = +k;
+        return Object.entries(this.data).forEach(([id, entry]) => {
             if (!this.submited[entry["submitter_id"]])
                 this.submited[entry["submitter_id"]] = [];
             this.submited[entry["submitter_id"]].push(id);
@@ -58,7 +57,7 @@ class TicketRepository {
         return Object.entries(this.data).filter(([k, v]) => v[field] == value).map(([k, v]) => (v));
     }
 
-    public findById(id: number): any {
+    public findById(id: string): any {
         return this.data[id];
     }
 
