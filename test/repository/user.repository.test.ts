@@ -64,16 +64,22 @@ describe("User Repository Test", () => {
         }
     };
 
-    it("find by field - return value", function () {
+    userRepository.initiateIndexes();
+
+    it("find by field - return value", () => {
         assert.equal(userRepository.findByField("name", "Francisca Rasmussen").length, 1);
     });
 
-    it("find by id - return value", function () {
+    it("find by id - return value", () => {
         assert.equal(userRepository.findById(1).name, "Francisca Rasmussen");
     });
 
-    it("find by id - return empty", function () {
+    it("find by id - return empty", () => {
         assert.equal(userRepository.findById(3), null);
+    });
+
+    it("find by org - return array", () => {
+        assert.equal(userRepository.findbyOrg(119).length, 1);
     });
 
 });

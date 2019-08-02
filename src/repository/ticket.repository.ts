@@ -1,17 +1,27 @@
+
+import fs from "fs";
+
 import FileHelper from "../helper/file.helper";
 
-class UserRepository {
+class TicketRepository {
     // data indexed by id
     public data: { [key: number]: any; } = {};
+
+    // indexed assignee
+    public assigned: { [key: number]: number[] } = {};
+
+    // indexed submitted user
+    public submited: { [key: number]: number[]; } = {};
 
     // indexed org
     public org: { [key: number]: number[]; } = {};
 
     private field: any[];
+
     private fileHelper = new FileHelper();
 
     constructor() {
-        this.fileHelper.readDataFile("users.json",
+        this.fileHelper.readDataFile("tickets.json",
             (err, content) => {
                 if (err) { throw err; }
                 const json: [] = JSON.parse(content);
@@ -22,7 +32,7 @@ class UserRepository {
                     }
                 }
                 this.initiateIndexes();
-                console.log(`Finished Loading User Data`);
+                console.log(`Finished Loading Organizations Data`);
             }
         );
     }
@@ -30,6 +40,14 @@ class UserRepository {
     public initiateIndexes() {
         return Object.entries(this.data).forEach(([k, entry]) => {
             const id = +k;
+            if (!this.submited[entry["submitter_id"]])
+                this.submited[entry["submitter_id"]] = [];
+            this.submited[entry["submitter_id"]].push(id);
+
+            if (!this.assigned[entry["assignee_id"]])
+                this.assigned[entry["assignee_id"]] = [];
+            this.assigned[entry["assignee_id"]].push(id);
+
             if (!this.org[entry["organization_id"]])
                 this.org[entry["organization_id"]] = [];
             this.org[entry["organization_id"]].push(id);
@@ -44,9 +62,17 @@ class UserRepository {
         return this.data[id];
     }
 
+    public findByAssignedTo(userId: number): any[] {
+        return this.submited[userId].map(id => this.data[id]);
+    }
+
+    public findBySubmittedBy(userId: number): any[] {
+        return this.assigned[userId].map(id => this.data[id]);
+    }
+
     public findbyOrg(orgId: number): any[] {
         return this.org[orgId].map(id => this.data[id]);
     }
 }
 
-export default UserRepository;
+export default TicketRepository;
