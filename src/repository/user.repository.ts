@@ -4,7 +4,7 @@ import fs from "fs";
 import FileHelper from "../helper/file.helper";
 
 class UserRepository {
-    private data: { [key: string]: any; } = {};
+    public data: { [key: number]: any; } = {};
     private field: any[];
     private fileHelper = new FileHelper();
 
@@ -25,7 +25,11 @@ class UserRepository {
     }
 
     public findByField(field: string, value: string): any[] {
-        return this.data.filter((key, val) => val[field] === value).map((key, val) => val);
+        return Object.entries(this.data).filter(([k, v]) => v[field] == value).map(([k, v]) => (v));
+    }
+
+    public findById(id: number): any {
+        return this.data[id];
     }
 }
 
