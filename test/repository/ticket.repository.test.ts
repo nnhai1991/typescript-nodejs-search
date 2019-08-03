@@ -73,7 +73,11 @@ describe("Ticket Repository Test", () => {
     });
 
     it("find by org - return array", () => {
-        assert.equal(ticketRepository.findbyOrg(119).length, 1);
+        assert.equal(ticketRepository.findbyOrg(116).length, 1);
+    });
+
+    it("find by org - return empty", () => {
+        assert.equal(ticketRepository.findbyOrg(999).length, 0);
     });
 
 });

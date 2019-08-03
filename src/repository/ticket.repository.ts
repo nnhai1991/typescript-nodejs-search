@@ -62,14 +62,20 @@ class TicketRepository {
     }
 
     public findByAssignedTo(userId: number): any[] {
+        if (!this.submited[userId])
+            return [];
         return this.submited[userId].map(id => this.data[id]);
     }
 
     public findBySubmittedBy(userId: number): any[] {
+        if (!this.assigned[userId])
+            return [];
         return this.assigned[userId].map(id => this.data[id]);
     }
 
     public findbyOrg(orgId: number): any[] {
+        if (!this.org[orgId])
+            return [];
         return this.org[orgId].map(id => this.data[id]);
     }
 }

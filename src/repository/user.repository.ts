@@ -45,6 +45,8 @@ class UserRepository {
     }
 
     public findbyOrg(orgId: number): any[] {
+        if (!this.org[orgId])
+            return [];
         return this.org[orgId].map(id => this.data[id]);
     }
 }

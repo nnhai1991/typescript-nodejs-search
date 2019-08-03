@@ -82,6 +82,10 @@ describe("User Repository Test", () => {
         assert.equal(userRepository.findbyOrg(119).length, 1);
     });
 
+    it("find by org - return empty", () => {
+        assert.equal(userRepository.findbyOrg(999).length, 0);
+    });
+
 });
 
 mockManager.restore();
