@@ -23,7 +23,8 @@ class SearchService {
             && this.ticketRepo && this.ticketRepo.initiated
             && this.orgRepo && this.orgRepo.initiated){
                 setTimeout(() => {
-                    this.afterInit();
+                    if(this.afterInit)
+                        this.afterInit();
                 }, 100);
             
         }
