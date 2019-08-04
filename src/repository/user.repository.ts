@@ -1,4 +1,5 @@
 import FileHelper from "../helper/file.helper";
+import Comparator from "../helper/comparator";
 
 class UserRepository {
     // data indexed by id
@@ -28,19 +29,24 @@ class UserRepository {
     }
 
     public initiateIndexes() {
-        return Object.entries(this.data).forEach(([k, entry]) => {
-            const id = +k;
-            if (!this.org[entry["organization_id"]])
-                this.org[entry["organization_id"]] = [];
-            this.org[entry["organization_id"]].push(id);
+        Object.entries(this.data).forEach(([k, entry]) => {
+            if (entry["organization_id"]) {
+                const id = +k;
+                if (!this.org[entry["organization_id"]])
+                    this.org[entry["organization_id"]] = [];
+                this.org[entry["organization_id"]].push(id);
+            }
         });
+        console.log(this.org);
     }
 
     public findByField(field: string, value: string): any[] {
-        return Object.entries(this.data).filter(([k, v]) => v[field] == value).map(([k, v]) => (v));
+        return Object.entries(this.data)
+            .filter(([k, v]) => Comparator.equalOrContains(v[field], value))
+            .map(([k, v]) => (v));
     }
 
-    public findById(id: number): any {
+    public findById(id: any): any {        
         return this.data[id];
     }
 

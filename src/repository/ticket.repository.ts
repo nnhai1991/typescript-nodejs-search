@@ -1,7 +1,6 @@
 
-import fs from "fs";
-
 import FileHelper from "../helper/file.helper";
+import Comparator from "../helper/comparator";
 
 class TicketRepository {
     // data indexed by id
@@ -39,22 +38,28 @@ class TicketRepository {
 
     public initiateIndexes() {
         return Object.entries(this.data).forEach(([id, entry]) => {
-            if (!this.submited[entry["submitter_id"]])
-                this.submited[entry["submitter_id"]] = [];
-            this.submited[entry["submitter_id"]].push(id);
-
-            if (!this.assigned[entry["assignee_id"]])
-                this.assigned[entry["assignee_id"]] = [];
-            this.assigned[entry["assignee_id"]].push(id);
-
-            if (!this.org[entry["organization_id"]])
-                this.org[entry["organization_id"]] = [];
-            this.org[entry["organization_id"]].push(id);
+            if (entry["submitter_id"]) {
+                if (!this.submited[entry["submitter_id"]])
+                    this.submited[entry["submitter_id"]] = [];
+                this.submited[entry["submitter_id"]].push(id);
+            }
+            if (entry["assignee_id"]) {
+                if (!this.assigned[entry["assignee_id"]])
+                    this.assigned[entry["assignee_id"]] = [];
+                this.assigned[entry["assignee_id"]].push(id);
+            }
+            if (entry["organization_id"]) {
+                if (!this.org[entry["organization_id"]])
+                    this.org[entry["organization_id"]] = [];
+                this.org[entry["organization_id"]].push(id);
+            }
         });
     }
 
     public findByField(field: string, value: string): any[] {
-        return Object.entries(this.data).filter(([k, v]) => v[field] == value).map(([k, v]) => (v));
+        return Object.entries(this.data)
+            .filter(([k, v]) => Comparator.equalOrContains(v[field], value))
+            .map(([k, v]) => (v));
     }
 
     public findById(id: string): any {

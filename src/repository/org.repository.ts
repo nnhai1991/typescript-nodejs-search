@@ -1,7 +1,7 @@
 
-import fs from "fs";
 
 import FileHelper from "../helper/file.helper";
+import Comparator from "../helper/comparator";
 
 class OrgRepository {
     public data: { [key: number]: any; } = {};
@@ -25,7 +25,9 @@ class OrgRepository {
     }
 
     public findByField(field: string, value: string): any[] {
-        return Object.entries(this.data).filter(([k, v]) => v[field] == value).map(([k, v]) => (v));
+        return Object.entries(this.data)
+            .filter(([k, v]) => Comparator.equalOrContains(v[field], value))
+            .map(([k, v]) => (v));
     }
 
     public findById(id: number): any {
