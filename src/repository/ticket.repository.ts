@@ -19,7 +19,9 @@ class TicketRepository {
 
     private fileHelper = new FileHelper();
 
-    constructor() {
+    public initiated = false;
+
+    constructor(callBack:()=>void) {
         this.fileHelper.readDataFile("tickets.json",
             (err, content) => {
                 if (err) { throw err; }
@@ -31,13 +33,15 @@ class TicketRepository {
                     }
                 }
                 this.initiateIndexes();
-                console.log(`Finished Loading Organizations Data`);
+                if(callBack)
+                    callBack();
+                console.log(`Finished Loading Tickets Data`);
             }
         );
     }
 
     public initiateIndexes() {
-        return Object.entries(this.data).forEach(([id, entry]) => {
+        Object.entries(this.data).forEach(([id, entry]) => {
             if (entry["submitter_id"]) {
                 if (!this.submited[entry["submitter_id"]])
                     this.submited[entry["submitter_id"]] = [];
@@ -54,6 +58,7 @@ class TicketRepository {
                 this.org[entry["organization_id"]].push(id);
             }
         });
+        this.initiated = true;
     }
 
     public findByField(field: string, value: string): any[] {

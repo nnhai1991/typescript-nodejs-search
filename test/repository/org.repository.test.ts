@@ -7,7 +7,7 @@ import * as fileHelperModule from "../../src/helper/file.helper";
 const mockManager = ImportMock.mockClass(fileHelperModule);
 
 describe("Org Repository Test", () => {
-    const orgRepository = new OrgRepository();
+    const orgRepository = new OrgRepository(null);
     orgRepository.data = {
         101: {
             "_id": 101,

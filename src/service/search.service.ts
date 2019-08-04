@@ -9,12 +9,26 @@ class SearchService {
     public userRepo: UserRepository;
     public ticketRepo: TicketRepository;
     public orgRepo: OrgRepository;
+    public afterInit:()=>void;
 
-    constructor() {
-        this.userRepo = new UserRepository();
-        this.ticketRepo = new TicketRepository();
-        this.orgRepo = new OrgRepository();
+    constructor(callBack:()=>void) {
+        this.userRepo = new UserRepository(()=>this.onRepoInit());
+        this.ticketRepo = new TicketRepository(()=>this.onRepoInit());
+        this.orgRepo = new OrgRepository(()=>this.onRepoInit());
+        this.afterInit = callBack;
     }
+
+    onRepoInit(){
+        if(this.userRepo && this.userRepo.initiated
+            && this.ticketRepo && this.ticketRepo.initiated
+            && this.orgRepo && this.orgRepo.initiated){
+                setTimeout(() => {
+                    this.afterInit();
+                }, 100);
+            
+        }
+    }
+
 
     public searchUserByField(field: string, value: string): UserDTO[] {
         let dtoList = [];

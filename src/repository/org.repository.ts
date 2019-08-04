@@ -7,8 +7,9 @@ class OrgRepository {
     public data: { [key: number]: any; } = {};
     private field: any[];
     private fileHelper = new FileHelper();
+    public initiated = false;
 
-    constructor() {
+    constructor(callBack:()=>void) {
         this.fileHelper.readDataFile("organizations.json",
             (err, content) => {
                 if (err) { throw err; }
@@ -18,8 +19,11 @@ class OrgRepository {
                     if (id) {
                         this.data[id] = entry;
                     }
-                }
+                }                
                 console.log(`Finished Loading Organizations Data`);
+                this.initiated = true;
+                if(callBack)
+                    callBack();
             }
         );
     }

@@ -7,7 +7,7 @@ import * as fileHelperModule from "../../src/helper/file.helper";
 const mockManager = ImportMock.mockClass(fileHelperModule);
 
 describe("User Repository Test", () => {
-    const userRepository = new UserRepository();
+    const userRepository = new UserRepository(null);
     userRepository.data = {
         1: {
             "_id": 1,

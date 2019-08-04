@@ -13,7 +13,8 @@ class Main {
             input: process.stdin,
             output: process.stdout,
         });
-        this.service = new SearchService();
+        console.log("Initiating repositories");
+        this.service = new SearchService(() => this.startOver());
     }
 
     public run() {
@@ -43,52 +44,60 @@ class Main {
     }
 
     private beginUser() {
-        this.rl.question("Enter field ", (field) => {
-            this.rl.question("Enter value ", (value) => {
-                const dtoList = this.service.searchUserByField(field, value);
-                console.log(`Found ${dtoList.length} records`);
-                for (let dto of dtoList) {
-                    console.log(dto.user);
-                    console.log("Org:");
-                    console.log(dto.org ? dto.org : "No Org Found");
-                    console.log("Assigned Tickets:");
-                    console.log(dto.assignedTickets.map(t => t.subject));
-                    console.log("Submitted Tickets:");
-                    console.log(dto.submittedTickets.map(t => t.subject));
-                }
-                this.startOver();
-            });
+        this.askAndSearch((field, value) => {
+            const dtoList = this.service.searchUserByField(field, value);
+            console.log(`Found ${dtoList.length} records`);
+            for (let dto of dtoList) {
+                console.log(dto.user);
+                console.log("Org:");
+                console.log(dto.org ? dto.org.name : "No Org Found");
+                console.log("Assigned Tickets:");
+                console.log(dto.assignedTickets.map(t => t.subject));
+                console.log("Submitted Tickets:");
+                console.log(dto.submittedTickets.map(t => t.subject));
+            }
+            this.startOver();
         });
     }
 
 
     private beginTicket() {
-        this.rl.question("Enter field ", (field) => {
-            this.rl.question("Enter value ", (value) => {
-                const dtoList = this.service.searchTicketByField(field, value);
-                console.log(`Found ${dtoList.length} records`);
-                for (let dto of dtoList) {
-                    console.log(dto);
-                }
-                this.startOver();
-            });
+        this.askAndSearch((field, value) => {
+            const dtoList = this.service.searchTicketByField(field, value);
+            console.log(`Found ${dtoList.length} records`);
+            for (let dto of dtoList) {
+                console.log(dto.ticket);
+                console.log("Org:")
+                console.log(dto.org ? dto.org.name : "Not found");
+                console.log("Assignee:")
+                console.log(dto.assignee ? dto.assignee.name : "Not found");
+                console.log("Submitted By:")
+                console.log(dto.submittedBy ? dto.submittedBy.name : "Not found");
+            }
+            this.startOver();
         });
 
     }
 
     private beginOrg() {
+        this.askAndSearch((field, value) => {
+            const dtoList = this.service.searchOrgByField(field, value);
+            console.log(`Found ${dtoList.length} records`);
+            for (let dto of dtoList) {
+                console.log(dto.org);
+                console.log("Tickets:");
+                console.log(dto.tickets ? dto.tickets.map(t => t.subject) : "No tickets found");
+                console.log("Users:");
+                console.log(dto.users ? dto.users.map(t => t.name) : "No users found");
+            }
+            this.startOver();
+        });
+    }
+
+    private askAndSearch(callback: (field: string, value: string) => void) {
         this.rl.question("Enter field ", (field) => {
             this.rl.question("Enter value ", (value) => {
-                const dtoList = this.service.searchOrgByField(field, value);
-                console.log(`Found ${dtoList.length} records`);
-                for (let dto of dtoList) {
-                    console.log(dto.org);
-                    console.log("Tickets:");
-                    console.log(dto.tickets?dto.tickets.map(t => t.subject):"No tickets found");
-                    console.log("Users:");
-                    console.log(dto.users?dto.users.map(t => t.name):"No users found");
-                }
-                this.startOver();
+                callback(field, value);
             });
         });
     }
@@ -101,7 +110,6 @@ class Main {
     private startOver() {
         this.ask("Begin program (1 user/2 ticket/3 org/exit)? ");
     }
-
 }
 
-new Main().run();
+const app = new Main();

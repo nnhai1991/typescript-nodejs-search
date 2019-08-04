@@ -10,8 +10,9 @@ class UserRepository {
 
     private field: any[];
     private fileHelper = new FileHelper();
+    public initiated = false;
 
-    constructor() {
+    constructor(callBack:()=>void) {
         this.fileHelper.readDataFile("users.json",
             (err, content) => {
                 if (err) { throw err; }
@@ -23,6 +24,8 @@ class UserRepository {
                     }
                 }
                 this.initiateIndexes();
+                if(callBack)
+                    callBack();
                 console.log(`Finished Loading User Data`);
             }
         );
@@ -37,7 +40,7 @@ class UserRepository {
                 this.org[entry["organization_id"]].push(id);
             }
         });
-        console.log(this.org);
+        this.initiated = true;
     }
 
     public findByField(field: string, value: string): any[] {

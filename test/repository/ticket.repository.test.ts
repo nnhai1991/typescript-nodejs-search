@@ -7,7 +7,7 @@ import * as fileHelperModule from "../../src/helper/file.helper";
 const mockManager = ImportMock.mockClass(fileHelperModule);
 
 describe("Ticket Repository Test", () => {
-    const ticketRepository = new TicketRepository();
+    const ticketRepository = new TicketRepository(null);
     ticketRepository.data = {
         "436bf9b0-1147-4c0a-8439-6f79833bff5b":
         {
